@@ -1,0 +1,29 @@
+diff -Naur ffmpeg-2.7.1/libavutil/libm.h ffmpeg-2.7.1-patched/libavutil/libm.h
+--- ffmpeg-2.7.1/libavutil/libm.h	2015-03-15 10:46:05.000000000 +0800
++++ ffmpeg-2.7.1-patched/libavutil/libm.h	2015-10-01 13:04:32.515702629 +0800
+@@ -173,17 +173,25 @@
+ #endif /* HAVE_ROUNDF */
+ 
+ #if !HAVE_TRUNC
++#if 1 //FredTseng@20150711,FFmpeg cross-compiling for MIPS
++#define trunc(x) ((x > 0) ? floor(x) : ceil(x))
++#else
+ static av_always_inline av_const double trunc(double x)
+ {
+     return (x > 0) ? floor(x) : ceil(x);
+ }
++#endif
+ #endif /* HAVE_TRUNC */
+ 
+ #if !HAVE_TRUNCF
++#if 1 //FredTseng@20150711,FFmpeg cross-compiling for MIPS
++#define truncf(x) ((x > 0) ? floor(x) : ceil(x))
++#else
+ static av_always_inline av_const float truncf(float x)
+ {
+     return (x > 0) ? floor(x) : ceil(x);
+ }
++#endif
+ #endif /* HAVE_TRUNCF */
+ 
+ #endif /* AVUTIL_LIBM_H */

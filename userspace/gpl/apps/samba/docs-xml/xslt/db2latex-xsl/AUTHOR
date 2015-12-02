@@ -1,0 +1,15 @@
+<!--############################################################################# 
+ |	$Id: AUTHOR,v 1.2 2014/11/19 09:13:41 wtchen Exp $
+ |- #############################################################################
+ |	$Author: wtchen $
+ |														
+ |   PURPOSE:
+ + ############################################################################## -->
+
+Ramon Casellas <casellas@aist.enst.fr>, <casellas@infres.enst.fr>
+	* Project manager and Developer.
+	* with the help of many other people <xref linkend="thanks"/> :)
+
+James Devenish <j-devenish@users.sourceforge.net> 
+	* Project manager and Developer.
+	* Patches and improvements. 
