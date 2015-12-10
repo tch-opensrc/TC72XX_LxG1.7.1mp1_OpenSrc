@@ -43,18 +43,18 @@
 //****************************************************************************
 //  $Id$
 //
-//  Filename:       3384_map.h
-//  Author:         Russell Enderby and much later Peter Sulc
-//  Creation Date:  June 13, 2008 and 12/12/12
+//  Filename:       3380_map.h
+//  Author:         Russell Enderby
+//  Creation Date:  June 13, 2008
 //
 //****************************************************************************
 //  Description:
-//      This file defines addresses of major hardware components of 3384
+//      This file defines addresses of major hardware components of 3380
 //
 //****************************************************************************
 
-#ifndef __3384_MAP_PART_H
-#define __3384_MAP_PART_H
+#ifndef __3383_MAP_PART_H
+#define __3383_MAP_PART_H
 
 #include "bcmtypes.h"
 
@@ -70,29 +70,21 @@ extern "C" {
 #define INTC_BASE    0xb4e00000   // interrupts controller registers
 #define UART_BASE0   0xb4e00500   // uart registers
 #define UART_BASE1   0xb4e00520   // uart registers
-#define UART_BASE2   0xb4e00540   // uart registers
-#if defined(CONFIG_BMIPS5000)
 #define UART_BASE    UART_BASE1
-#elif defined(CONFIG_BMIPS4350)
-#define UART_BASE    UART_BASE2
-#endif
-
 #define SPIM_BASE    0xb4e01000   // high speed SPI master 
 #define HSSPIM_BASE  SPIM_BASE
-#define EHCI_BASE    0x15400300
-#define OHCI_BASE    0x15400400
-#define USB_CTL_BASE 0xb5400200
+#define EHCI_BASE    0x12e00000
+#define OHCI_BASE    0x12e00100
+#define USB_CTL_BASE 0xb2e00200
 #define NAND_REG_BASE               0xb4e02200  /* nand interrupt control */
 #define NAND_CACHE_BASE             0xb4e02600 
+
+#define IO_PROC_BASE            0xb6000000
+
 
 typedef struct
 {
     uint32 CtrlSetup;
-      #define OHCI_FIFO_RESET  (1 << 15)
-	  #define EHCI_FIFO_RESET  (1 << 14)
-      #define USB_BRIDGE_RESET (1 << 13)
-      #define DISCON_INTR_EN   (1 << 11)
-      #define CON_INTR_EN      (1 << 10)
       #define SFTRST (1 << 6)
       #define IPP    (1 << 5)
       #define IOC    (1 << 4)
@@ -141,39 +133,49 @@ typedef struct
 // Interrupt Controller
 typedef struct IntControl
 {
-    uint32          RevID;              // (00)       // Revision ID
-    uint32          TimerControl;       // (10)       // Timer Control
-    IntMaskStatus   DocsisIrq[3];       // (14..28)   // Docsis Interrupt Mask/Status
-    uint32          Reserved0;          // (2c)
-    IntMaskStatus   PeriphIrq[4];       // (30..4c)   // Internal Periph IRQ Mask/Status
-    IntMaskStatus   IopIrq[2];          // (50..5c)   // IOP Interrupt Mask/Status
-    uint32          DocsisIrqSense;     // (60)       // Docsis Interrupt Sense (0 = hi, 1 = lo)
-    uint32          PeriphIrqSense;     // (64)       // Periph Interrupt Sense (0 = hi, 1 = lo)
-    uint32          IopIrqSense;        // (68)       // IOP Interrupt Sense (0 = hi, 1 = lo)
-    uint32          Ext0IrqControl;     // (6c)       // External Interrupt Configuration 0
-    uint32          Ext1IrqControl;     // (70)       // External Interrupt Configuration 1
-    uint32          Ext2IrqControl;     // (74)       // External Interrupt Configuration 2
-    uint32          IrqOutMask;         // (78)       // Interrupt Out Mask
-    uint32          DiagSelectControl;  // (7c)       // Diagnostic Select Control
-    uint32          DiagReadBack;       // (80)       // Diagnostic Readback
-    uint32          DiagReadBackHi;     // (84)       // Diagnostic High Readback
-    uint32          DiagMiscControl;    // (88)       // Miscellaneous Control
+    uint32          RevID;              // (00)       // Revision ID Register
+    uint32          ClkCtrlLow;         // (04)       // Clock Control Register LOW
+	#define USB_CLK_EN  (1 << 7)
+    	#define NAND_CLK_EN (1 << 17)
+    uint32          ClkCtrlHigh;        // (08)       // Clock Control Register HI
+    uint32          ClkCtrlUBus;        // (0c)       // UBUS Clock Control Register
+	#define USB_UBUS_CLK_EN (1 << 7)
+    uint32          TimerControl;       // (10)       // Timer Control Register
+    IntMaskStatus   DocsisIrq[3];       // (14..28)   // Docsis Interrupt Mask/Status Registers
+    uint32          IntPeriphIrqStatus; // (2c)       // Internal Periph IRQ Status Register
+    IntMaskStatus   PeriphIrq[4];       // (30..4c)   // Internal Periph IRQ Mask/Status Registers
+    IntMaskStatus   IopIrq[2];          // (50..5c)   // IOP Interrupt Mask/Status Registers
+    uint32          DocsisIrqSense;     // (60)       // Docsis Interrupt Sense Register (0 = hi, 1 = lo)
+    uint32          PeriphIrqSense;     // (64)       // Periph Interrupt Sense Register (0 = hi, 1 = lo)
+    uint32          IopIrqSense;        // (68)       // IOP Interrupt Sense Register    (0 = hi, 1 = lo)
+    uint32          Ext0IrqControl;     // (6c)       // External Interrupt Configuration Register 0
+    uint32          DiagControl;        // (70)       // Diagnostic and MBIST Control Register
+    uint32          Ext1IrqControl;     // (74)       // External Interrupt Configuration Register 1
+    uint32          IrqOutMask;         // (78)       // Interrupt Out Mask Register
+    uint32          DiagSelectControl;  // (7c)       // Diagnostic Select Control Register
+    uint32          DiagReadBack;       // (80)       // Diagnostic Readback Register
+    uint32          DiagReadBackHi;     // (84)       // Diagnostic High Readback Register
+    uint32          DiagMiscControl;    // (88)       // Miscellaneous Control Register
     uint32          SoftResetBLow;      // (8c)       // Soft ResetB Register Lo
-	uint32			Reserved1;			// (90)
-    uint32          DSramIRQStatus;     // (94)       // Soft ResetB Register Hi
+    uint32          SoftResetBHigh;     // (90)       // Soft ResetB Register Hi
+    uint32          SoftReset;          // (94)       // Soft Reset Register
     uint32          ExtIrqMuxSelect0;   // (98)       // External IRQ Mux Select Register
-	uint32          IntPeriphIRQSTATUS; // (9c)		  // Internal Periph IRQ Status Register
-	uint32          IntPeriphIRQMASK; 	// (a0)		  // Internal Periph IRQ Mask Register
-	uint32			Reserved2;	 		// (a4)		  // Reserved
-	uint32			Reserved3;	 		// (a8)		  // Reserved
-	uint32			Reserved4;	 		// (ac)		  // Reserved
-	uint32			Reserved5;	 		// (b0)		  // Reserved
-	uint32			Reserved6;	 		// (b4)		  // Reserved
-	uint32			Reserved7;	 		// (bc)		  // Reserved
-	uint32			SoftNoWatchdogResetB; // (c0)	  // Soft No Watchdog ResetB Register	
 } IntControl;
 
 #define PERF ((volatile IntControl * const) INTC_BASE)
+#if defined(CONFIG_BCM_LOT1)
+#define IrqStatus PeriphIrq[3].iStatus
+#define IrqMask PeriphIrq[3].iMask
+#else
+#if defined(CONFIG_BCM93383)
+#define IrqStatus PeriphIrq[0].iStatus
+#define IrqMask PeriphIrq[0].iMask
+#else
+#define IrqStatus PeriphIrq[2].iStatus
+#define IrqMask PeriphIrq[2].iMask
+#endif
+#endif
+#define pll_control TimerControl
 
 typedef struct Uart
 {

@@ -1316,7 +1316,7 @@ void sendItcMsg(uint32 msg)
 	spin_lock_irqsave(&itc_msg_lock, flags);
 
 #if defined(CONFIG_BCM93383)
-    *((volatile uint32 *)ITC_OUTBOX_REG_ADDRESS) = msg;
+        *((volatile uint32 *)ITC_OUTBOX_REG_ADDRESS) = msg;
 #if defined(CONFIG_BCM_LOT1)
 	c0reg = __read_32bit_c0_register($13, 0);
 	__write_32bit_c0_register($13, 0, c0reg | (1 << 8));

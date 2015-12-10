@@ -1046,6 +1046,7 @@ fsapps_clean:
 
 
 kernel_clean: sanity_check
+	@find bcmdrivers/ -type l | xargs rm -f
 	$(MAKE) -C $(KERNEL_DIR) mrproper
 	rm -f $(KERNEL_DIR)/arch/mips/defconfig
 	rm -f $(HOSTTOOLS_DIR)/lzma/decompress/*.o
